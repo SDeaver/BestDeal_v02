@@ -36,6 +36,10 @@ export default function App() {
   const [fadedOut, setFadedOut] = useState(true);
   const fadeAnim = useRef(new Animated.Value(0)).current; 
   const fadeBoxAnim = useRef(new Animated.Value(0)).current;
+  const [leftAnim, setLeftAnim] = useState(imageList.animTest);
+  const [rightAnim, setRightAnim] = useState(imageList.animTest);
+  const leftAnimRef = useRef(null);
+  const rightAnimRef = useRef(null);
 
   function pricePerUnitFadeIn(leftVal, rightVal) {
 
@@ -125,35 +129,34 @@ export default function App() {
   
   }
 
-  function chooseQuantityImage(side) {
+  function chooseQuantityImage(lQuantity, rQuantity) {
     
-    let lQuantity = Number(leftQuantity);
-    let rQuantity = Number(rightQuantity);
+    if (lQuantity === '' || rQuantity == '') {
+      return;
+    }
+    else if (isNaN(lQuantity) || isNaN(rQuantity)) {
+      return;
+    }
+ 
+    const lQuant = Number(lQuantity);
+    const rQuant = Number(rQuantity);
 
+    leftAnimRef.current.play();
+    rightAnimRef.current.play(162, 0);
 
-    if (leftQuantity === '' || rightQuantity == '') {
-      return imageList.empty;
-    }
-    else if (isNaN(leftQuantity) || isNaN(rightQuantity)) {
-      return imageList.empty;
-    }
-   
-    if (side === 'left') {
-      if (lQuantity > rQuantity) {
-        return imageList.pileLarge;
-      } 
-      else {
-        return imageList.pileSmall;
-      }
-    }
-    else if (side === 'right') {
-      if (rQuantity > lQuantity) {
-        return imageList.pileLarge;
-      } 
-      else {
-        return imageList.pileSmall;
-      }
-    }
+    // if (lQuant > rQuant) {
+    //   leftAnimRef.current.play();
+    //   rightAnimRef.current.play();
+    // } 
+    // else if (lQuant < rQuant) {
+    //   leftAnimRef.current.play();
+    //   rightAnimRef.current.play();
+    // }
+    // else {
+    //   leftAnimRef.current.play();
+    //   rightAnimRef.current.play();
+    // }
+
   }
 
   function chooseBoxStyle(isBestDeal) {
@@ -180,11 +183,13 @@ export default function App() {
   function updatetLeftQuantity(newVal) {
     resetOutput();
     setLeftQuantity(newVal);
+    chooseQuantityImage(newVal, rightQuantity);
   }
 
   function updateRightQuantity(newVal) {
     resetOutput();
     setRightQuantity(newVal);
+    chooseQuantityImage(leftQuantity, newVal);
   }
 
   function resetOutput() {
@@ -288,7 +293,7 @@ export default function App() {
             </View>
 
             <View style={allStyles.calcImageContainer}>
-              <Image style={allStyles.calcQuantityImage} source={chooseQuantityImage('left')}></Image>
+              <LottieView ref={leftAnimRef} style={allStyles.calcImageAnim} source={leftAnim} loop={false} autoPlay={false}/>
             </View>
             
             <View style={allStyles.calcOutputContainer}>
@@ -316,7 +321,7 @@ export default function App() {
             </View>
 
             <View style={allStyles.calcImageContainer}>
-              <Image style={allStyles.calcQuantityImage} source={chooseQuantityImage('right')}></Image>
+              <LottieView ref={rightAnimRef} style={allStyles.calcImageAnim} source={rightAnim} loop={false} autoPlay={false}/>
             </View>
 
             <View style={allStyles.calcOutputContainer}>

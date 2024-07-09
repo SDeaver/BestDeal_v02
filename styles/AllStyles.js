@@ -92,6 +92,9 @@ export const allStyles = StyleSheet.create ({
         borderRadius: 5,
         backgroundColor: colors.bgOutput,
     },
+    calcImageAnim: {
+        height: '100%',
+    },
     calcQuantityImage: {
         marginTop: -6,
         alignSelf: 'center',
@@ -177,11 +180,7 @@ export const allStyles = StyleSheet.create ({
         fontFamily: 'fontMain',
         textAlign: 'center',
     },
-    test: {
-        height: '20%',
-        borderColor: 'black',
-        borderWidth: 1,
-    }
+
 });
 
 

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Text, Image, ImageBackground, Pressable, View, Keyboard, Animated} from 'react-native';
+import { Text, ImageBackground, Pressable, View, Keyboard, Animated} from 'react-native';
 import { formatCurrency } from 'react-native-format-currency';
 import LottieView from 'lottie-react-native';
 
@@ -10,7 +10,7 @@ import InputRow from './components/InputRow';
 import CompareButton from './components/CompareButton';
 
 import { allStyles, allFonts, colors } from './styles/AllStyles';
-import { animTiming } from './styles/AnimTiming';
+import { animTiming, animList, animFrames } from './styles/Anims';
 import { imageList } from './styles/ImageList'
 import { text } from './styles/Text';
 
@@ -36,8 +36,8 @@ export default function App() {
   const [fadedOut, setFadedOut] = useState(true);
   const fadeAnim = useRef(new Animated.Value(0)).current; 
   const fadeBoxAnim = useRef(new Animated.Value(0)).current;
-  const [leftAnim, setLeftAnim] = useState(imageList.animTest);
-  const [rightAnim, setRightAnim] = useState(imageList.animTest);
+  const [leftAnimFrame, setLeftAnimFrame] = useState(0);
+  const [rightAnimFrame, setRightAnimFrame] = useState(0);
   const leftAnimRef = useRef(null);
   const rightAnimRef = useRef(null);
 
@@ -131,31 +131,108 @@ export default function App() {
 
   function chooseQuantityImage(lQuantity, rQuantity) {
     
-    if (lQuantity === '' || rQuantity == '') {
-      return;
-    }
-    else if (isNaN(lQuantity) || isNaN(rQuantity)) {
+    if (lQuantity <= 0 || rQuantity <= 0 || isNaN(lQuantity) || isNaN(rQuantity)) {
+
+      if (leftAnimFrame === animFrames.pileSmallDropInEnd) {
+        leftAnimRef.current.play(animFrames.pileSmallFallOutStart, animFrames.pileSmallFallOutEnd);
+        setLeftAnimFrame(animFrames.pileSmallFallOutEnd);
+      }
+      else if (leftAnimFrame === animFrames.pileLargeDropInEnd) {
+        leftAnimRef.current.play(animFrames.pileLargeFallOutStart, animFrames.pileLargeFallOutEnd);
+        setLeftAnimFrame(animFrames.pileLargeFallOutEnd);
+      }
+
+      if (rightAnimFrame === animFrames.pileSmallDropInEnd) {
+        rightAnimRef.current.play(animFrames.pileSmallFallOutStart, animFrames.pileSmallFallOutEnd);
+        setRightAnimFrame(animFrames.pileSmallFallOutEnd);
+      }
+      else if (rightAnimFrame === animFrames.pileLargeDropInEnd) {
+        rightAnimRef.current.play(animFrames.pileLargeFallOutStart, animFrames.pileLargeFallOutEnd);
+        setRightAnimFrame(animFrames.pileLargeFallOutEnd);
+      }
+
       return;
     }
  
     const lQuant = Number(lQuantity);
     const rQuant = Number(rQuantity);
 
-    leftAnimRef.current.play();
-    rightAnimRef.current.play(162, 0);
+    if (lQuant > rQuant) {
 
-    // if (lQuant > rQuant) {
-    //   leftAnimRef.current.play();
-    //   rightAnimRef.current.play();
-    // } 
-    // else if (lQuant < rQuant) {
-    //   leftAnimRef.current.play();
-    //   rightAnimRef.current.play();
-    // }
-    // else {
-    //   leftAnimRef.current.play();
-    //   rightAnimRef.current.play();
-    // }
+      if (leftAnimFrame === animFrames.pileLargeDropInEnd) {
+        // do nothing
+      }
+      else if (leftAnimFrame === animFrames.pileSmallDropInEnd) {
+        leftAnimRef.current.play(animFrames.pileSmallToLargeStart, animFrames.pileSmallToLargeEnd);
+      }
+      else {
+        leftAnimRef.current.play(animFrames.pileLargeDropInStart, animFrames.pileLargeDropInEnd);
+      }
+      setLeftAnimFrame(animFrames.pileLargeDropInEnd);
+
+
+      if (rightAnimFrame === animFrames.pileSmallDropInEnd) {
+        // do nothing
+      }
+      else if (rightAnimFrame === animFrames.pileLargeDropInEnd) {
+        rightAnimRef.current.play(animFrames.pileLargeToSmallStart, animFrames.pileLargeToSmallEnd);
+      }
+      else {
+        rightAnimRef.current.play(animFrames.pileSmallDropInStart, animFrames.pileSmallDropInEnd);
+      }
+      setRightAnimFrame(animFrames.pileSmallDropInEnd);
+      
+    } 
+    else if (lQuant < rQuant) {
+
+      if (leftAnimFrame === animFrames.pileSmallDropInEnd) {
+        // do nothing
+      }
+      else if (leftAnimFrame === animFrames.pileLargeDropInEnd) {
+        leftAnimRef.current.play(animFrames.pileLargeToSmallStart, animFrames.pileLargeToSmallEnd);
+      }
+      else {
+        leftAnimRef.current.play(animFrames.pileSmallDropInStart, animFrames.pileSmallDropInEnd);
+      }
+      setLeftAnimFrame(animFrames.pileSmallDropInEnd);
+
+      if (rightAnimFrame === animFrames.pileLargeDropInEnd) {
+        // do nothing
+      }
+      else if (rightAnimFrame === animFrames.pileSmallDropInEnd) {
+        rightAnimRef.current.play(animFrames.pileSmallToLargeStart, animFrames.pileSmallToLargeEnd);
+      }
+      else {
+        rightAnimRef.current.play(animFrames.pileLargeDropInStart, animFrames.pileLargeDropInEnd);
+      }
+      setRightAnimFrame(animFrames.pileLargeDropInEnd);
+
+    }
+    else {
+
+      if (leftAnimFrame === animFrames.pileSmallDropInEnd) {
+        // do nothing
+      }
+      else if (leftAnimFrame === animFrames.pileLargeDropInEnd) {
+        leftAnimRef.current.play(animFrames.pileLargeToSmallStart, animFrames.pileLargeToSmallEnd);
+      }
+      else {
+        leftAnimRef.current.play(animFrames.pileSmallDropInStart, animFrames.pileSmallDropInEnd);
+      }
+      setLeftAnimFrame(animFrames.pileSmallDropInEnd);
+
+      if (rightAnimFrame === animFrames.pileSmallDropInEnd) {
+        // do nothing
+      }
+      else if (rightAnimFrame === animFrames.pileLargeDropInEnd) {
+        rightAnimRef.current.play(animFrames.pileLargeToSmallStart, animFrames.pileLargeToSmallEnd);
+      }
+      else {
+        rightAnimRef.current.play(animFrames.pileSmallDropInStart, animFrames.pileSmallDropInEnd);
+      }
+      setRightAnimFrame(animFrames.pileSmallDropInEnd);
+      
+    }
 
   }
 
@@ -200,7 +277,6 @@ export default function App() {
     
     pricePerUnitFadeOut();
     bestDealBoxFadeOut();
-
   }
 
   function checkBadInput()
@@ -293,7 +369,7 @@ export default function App() {
             </View>
 
             <View style={allStyles.calcImageContainer}>
-              <LottieView ref={leftAnimRef} style={allStyles.calcImageAnim} source={leftAnim} loop={false} autoPlay={false}/>
+              <LottieView ref={leftAnimRef} style={allStyles.calcImageAnim} source={animList.pileAnims} loop={false} autoPlay={false}/>
             </View>
             
             <View style={allStyles.calcOutputContainer}>
@@ -321,7 +397,7 @@ export default function App() {
             </View>
 
             <View style={allStyles.calcImageContainer}>
-              <LottieView ref={rightAnimRef} style={allStyles.calcImageAnim} source={rightAnim} loop={false} autoPlay={false}/>
+              <LottieView ref={rightAnimRef} style={allStyles.calcImageAnim} source={animList.pileAnims} loop={false} autoPlay={false}/>
             </View>
 
             <View style={allStyles.calcOutputContainer}>
@@ -341,8 +417,6 @@ export default function App() {
           <CompareButton pressFunction={outputCompare} buttonIsLocked={checkBadInput()}/>
         </View>
 
-        {/* <LottieView style= {allStyles.test} source={imageList.animTest} autoPlay loop>
-        </LottieView> */}
 
       </Pressable>
     </ImageBackground>

@@ -129,110 +129,117 @@ export default function App() {
   
   }
 
-  function chooseQuantityImage(lQuantity, rQuantity) {
-    
+  function chooseQuantityAnim(lQuantity, rQuantity) {
+
+    const lQuant = Number(lQuantity);
+    const rQuant = Number(rQuantity);
+
+    let lAnimFrame = 1;
+    let rAnimFrame = 1;
+ 
     if (lQuantity <= 0 || rQuantity <= 0 || isNaN(lQuantity) || isNaN(rQuantity)) {
 
       if (leftAnimFrame === animFrames.pileSmallDropInEnd) {
         leftAnimRef.current.play(animFrames.pileSmallFallOutStart, animFrames.pileSmallFallOutEnd);
-        setLeftAnimFrame(animFrames.pileSmallFallOutEnd);
+        lAnimFrame = animFrames.pileSmallFallOutEnd;
       }
       else if (leftAnimFrame === animFrames.pileLargeDropInEnd) {
         leftAnimRef.current.play(animFrames.pileLargeFallOutStart, animFrames.pileLargeFallOutEnd);
-        setLeftAnimFrame(animFrames.pileLargeFallOutEnd);
+        lAnimFrame = animFrames.pileLargeFallOutEnd;
       }
 
       if (rightAnimFrame === animFrames.pileSmallDropInEnd) {
         rightAnimRef.current.play(animFrames.pileSmallFallOutStart, animFrames.pileSmallFallOutEnd);
-        setRightAnimFrame(animFrames.pileSmallFallOutEnd);
+        rAnimFrame = animFrames.pileSmallFallOutEnd;
       }
       else if (rightAnimFrame === animFrames.pileLargeDropInEnd) {
         rightAnimRef.current.play(animFrames.pileLargeFallOutStart, animFrames.pileLargeFallOutEnd);
-        setRightAnimFrame(animFrames.pileLargeFallOutEnd);
+        rAnimFrame = animFrames.pileLargeFallOutEnd;
       }
-
-      return;
-    }
- 
-    const lQuant = Number(lQuantity);
-    const rQuant = Number(rQuantity);
-
-    if (lQuant > rQuant) {
-
-      if (leftAnimFrame === animFrames.pileLargeDropInEnd) {
-        // do nothing
-      }
-      else if (leftAnimFrame === animFrames.pileSmallDropInEnd) {
-        leftAnimRef.current.play(animFrames.pileSmallToLargeStart, animFrames.pileSmallToLargeEnd);
-      }
-      else {
-        leftAnimRef.current.play(animFrames.pileLargeDropInStart, animFrames.pileLargeDropInEnd);
-      }
-      setLeftAnimFrame(animFrames.pileLargeDropInEnd);
-
-
-      if (rightAnimFrame === animFrames.pileSmallDropInEnd) {
-        // do nothing
-      }
-      else if (rightAnimFrame === animFrames.pileLargeDropInEnd) {
-        rightAnimRef.current.play(animFrames.pileLargeToSmallStart, animFrames.pileLargeToSmallEnd);
-      }
-      else {
-        rightAnimRef.current.play(animFrames.pileSmallDropInStart, animFrames.pileSmallDropInEnd);
-      }
-      setRightAnimFrame(animFrames.pileSmallDropInEnd);
-      
-    } 
-    else if (lQuant < rQuant) {
-
-      if (leftAnimFrame === animFrames.pileSmallDropInEnd) {
-        // do nothing
-      }
-      else if (leftAnimFrame === animFrames.pileLargeDropInEnd) {
-        leftAnimRef.current.play(animFrames.pileLargeToSmallStart, animFrames.pileLargeToSmallEnd);
-      }
-      else {
-        leftAnimRef.current.play(animFrames.pileSmallDropInStart, animFrames.pileSmallDropInEnd);
-      }
-      setLeftAnimFrame(animFrames.pileSmallDropInEnd);
-
-      if (rightAnimFrame === animFrames.pileLargeDropInEnd) {
-        // do nothing
-      }
-      else if (rightAnimFrame === animFrames.pileSmallDropInEnd) {
-        rightAnimRef.current.play(animFrames.pileSmallToLargeStart, animFrames.pileSmallToLargeEnd);
-      }
-      else {
-        rightAnimRef.current.play(animFrames.pileLargeDropInStart, animFrames.pileLargeDropInEnd);
-      }
-      setRightAnimFrame(animFrames.pileLargeDropInEnd);
 
     }
     else {
+    
+      if (lQuant > rQuant) {
 
-      if (leftAnimFrame === animFrames.pileSmallDropInEnd) {
-        // do nothing
-      }
-      else if (leftAnimFrame === animFrames.pileLargeDropInEnd) {
-        leftAnimRef.current.play(animFrames.pileLargeToSmallStart, animFrames.pileLargeToSmallEnd);
+        if (leftAnimFrame === animFrames.pileLargeDropInEnd) {
+          // do nothing
+        }
+        else if (leftAnimFrame === animFrames.pileSmallDropInEnd) {
+          leftAnimRef.current.play(animFrames.pileSmallToLargeStart, animFrames.pileSmallToLargeEnd);
+        }
+        else {
+          leftAnimRef.current.play(animFrames.pileLargeDropInStart, animFrames.pileLargeDropInEnd);
+        }
+        lAnimFrame = animFrames.pileLargeDropInEnd;
+
+
+        if (rightAnimFrame === animFrames.pileSmallDropInEnd) {
+          // do nothing
+        }
+        else if (rightAnimFrame === animFrames.pileLargeDropInEnd) {
+          rightAnimRef.current.play(animFrames.pileLargeToSmallStart, animFrames.pileLargeToSmallEnd);
+        }
+        else {
+          rightAnimRef.current.play(animFrames.pileSmallDropInStart, animFrames.pileSmallDropInEnd);
+        }
+        rAnimFrame = animFrames.pileSmallDropInEnd;
+
+      } 
+      else if (lQuant < rQuant) {
+
+        if (leftAnimFrame === animFrames.pileSmallDropInEnd) {
+          // do nothing
+        }
+        else if (leftAnimFrame === animFrames.pileLargeDropInEnd) {
+          leftAnimRef.current.play(animFrames.pileLargeToSmallStart, animFrames.pileLargeToSmallEnd);
+        }
+        else {
+          leftAnimRef.current.play(animFrames.pileSmallDropInStart, animFrames.pileSmallDropInEnd);
+        }
+        lAnimFrame = animFrames.pileSmallDropInEnd;
+
+        if (rightAnimFrame === animFrames.pileLargeDropInEnd) {
+          // do nothing
+        }
+        else if (rightAnimFrame === animFrames.pileSmallDropInEnd) {
+          rightAnimRef.current.play(animFrames.pileSmallToLargeStart, animFrames.pileSmallToLargeEnd);
+        }
+        else {
+          rightAnimRef.current.play(animFrames.pileLargeDropInStart, animFrames.pileLargeDropInEnd);
+        }
+        rAnimFrame = animFrames.pileLargeDropInEnd;
+
       }
       else {
-        leftAnimRef.current.play(animFrames.pileSmallDropInStart, animFrames.pileSmallDropInEnd);
-      }
-      setLeftAnimFrame(animFrames.pileSmallDropInEnd);
 
-      if (rightAnimFrame === animFrames.pileSmallDropInEnd) {
-        // do nothing
+        if (leftAnimFrame === animFrames.pileSmallDropInEnd) {
+          // do nothing
+        }
+        else if (leftAnimFrame === animFrames.pileLargeDropInEnd) {
+          leftAnimRef.current.play(animFrames.pileLargeToSmallStart, animFrames.pileLargeToSmallEnd);
+        }
+        else {
+          leftAnimRef.current.play(animFrames.pileSmallDropInStart, animFrames.pileSmallDropInEnd);
+        }
+        lAnimFrame = animFrames.pileSmallDropInEnd;
+
+        if (rightAnimFrame === animFrames.pileSmallDropInEnd) {
+          // do nothing
+        }
+        else if (rightAnimFrame === animFrames.pileLargeDropInEnd) {
+          rightAnimRef.current.play(animFrames.pileLargeToSmallStart, animFrames.pileLargeToSmallEnd);
+        }
+        else {
+          rightAnimRef.current.play(animFrames.pileSmallDropInStart, animFrames.pileSmallDropInEnd);
+        }
+        rAnimFrame = animFrames.pileSmallDropInEnd;
+        
       }
-      else if (rightAnimFrame === animFrames.pileLargeDropInEnd) {
-        rightAnimRef.current.play(animFrames.pileLargeToSmallStart, animFrames.pileLargeToSmallEnd);
-      }
-      else {
-        rightAnimRef.current.play(animFrames.pileSmallDropInStart, animFrames.pileSmallDropInEnd);
-      }
-      setRightAnimFrame(animFrames.pileSmallDropInEnd);
-      
     }
+
+    setLeftAnimFrame(lAnimFrame);
+    setRightAnimFrame(rAnimFrame);
 
   }
 
@@ -260,13 +267,13 @@ export default function App() {
   function updatetLeftQuantity(newVal) {
     resetOutput();
     setLeftQuantity(newVal);
-    chooseQuantityImage(newVal, rightQuantity);
+    chooseQuantityAnim(newVal, rightQuantity);
   }
 
   function updateRightQuantity(newVal) {
     resetOutput();
     setRightQuantity(newVal);
-    chooseQuantityImage(leftQuantity, newVal);
+    chooseQuantityAnim(leftQuantity, newVal);
   }
 
   function resetOutput() {

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Text, Image, ImageBackground, Pressable, View, Keyboard, Animated} from 'react-native';
+import { Text, ImageBackground, Pressable, View, Keyboard, Animated} from 'react-native';
 import { formatCurrency } from 'react-native-format-currency';
 import LottieView from 'lottie-react-native';
 
@@ -10,7 +10,7 @@ import InputRow from './components/InputRow';
 import CompareButton from './components/CompareButton';
 
 import { allStyles, allFonts, colors } from './styles/AllStyles';
-import { animTiming } from './styles/AnimTiming';
+import { animTiming, animList, animFrames } from './styles/Anims';
 import { imageList } from './styles/ImageList'
 import { text } from './styles/Text';
 
@@ -36,6 +36,12 @@ export default function App() {
   const [fadedOut, setFadedOut] = useState(true);
   const fadeAnim = useRef(new Animated.Value(0)).current; 
   const fadeBoxAnim = useRef(new Animated.Value(0)).current;
+  const [leftAnimFrame, setLeftAnimFrame] = useState(0);
+  const [rightAnimFrame, setRightAnimFrame] = useState(0);
+  const leftAnimRef = useRef(null);
+  const rightAnimRef = useRef(null);
+  const leftSparkleRef = useRef(null);
+  const rightSparkleRef = useRef(null);
 
   function pricePerUnitFadeIn(leftVal, rightVal) {
 
@@ -44,7 +50,7 @@ export default function App() {
       duration: animTiming.fadeInTime,
       useNativeDriver: true,
     }).start(() => {
-      bestDealBoxFadeIn();
+      bestDealBoxFadeIn(leftVal, rightVal);
       fadeAnim.removeAllListeners();
     });
 
@@ -73,13 +79,14 @@ export default function App() {
 
   }
 
-  function bestDealBoxFadeIn() {
+  function bestDealBoxFadeIn(leftVal, rightVal) {
 
     Animated.timing(fadeBoxAnim, {
       toValue: 1,
       duration: animTiming.fadeInBoxTime,
       useNativeDriver: true,
     }).start(() => {
+      doSparkle(leftVal, rightVal);
       fadeBoxAnim.removeAllListeners();
     });
 
@@ -125,35 +132,132 @@ export default function App() {
   
   }
 
-  function chooseQuantityImage(side) {
+  function doSparkle(leftVal, rightVal)
+  {
+    if (leftVal < rightVal) {
+      leftSparkleRef.current.play();
+    }
+    else if (rightVal < leftVal) {
+      rightSparkleRef.current.play();
+    }
+    else {
+      leftSparkleRef.current.play();
+      rightSparkleRef.current.play();
+    }
+  }
+
+  function chooseQuantityAnim(lQuantity, rQuantity) {
+
+    const lQuant = Number(lQuantity);
+    const rQuant = Number(rQuantity);
+
+    let lAnimFrame = 1;
+    let rAnimFrame = 1;
+ 
+    if (lQuantity <= 0 || rQuantity <= 0 || isNaN(lQuantity) || isNaN(rQuantity)) {
+
+      if (leftAnimFrame === animFrames.pileSmallDropInEnd) {
+        leftAnimRef.current.play(animFrames.pileSmallFallOutStart, animFrames.pileSmallFallOutEnd);
+        lAnimFrame = animFrames.pileSmallFallOutEnd;
+      }
+      else if (leftAnimFrame === animFrames.pileLargeDropInEnd) {
+        leftAnimRef.current.play(animFrames.pileLargeFallOutStart, animFrames.pileLargeFallOutEnd);
+        lAnimFrame = animFrames.pileLargeFallOutEnd;
+      }
+
+      if (rightAnimFrame === animFrames.pileSmallDropInEnd) {
+        rightAnimRef.current.play(animFrames.pileSmallFallOutStart, animFrames.pileSmallFallOutEnd);
+        rAnimFrame = animFrames.pileSmallFallOutEnd;
+      }
+      else if (rightAnimFrame === animFrames.pileLargeDropInEnd) {
+        rightAnimRef.current.play(animFrames.pileLargeFallOutStart, animFrames.pileLargeFallOutEnd);
+        rAnimFrame = animFrames.pileLargeFallOutEnd;
+      }
+
+    }
+    else {
     
-    let lQuantity = Number(leftQuantity);
-    let rQuantity = Number(rightQuantity);
+      if (lQuant > rQuant) {
+
+        if (leftAnimFrame === animFrames.pileLargeDropInEnd) {
+          // do nothing
+        }
+        else if (leftAnimFrame === animFrames.pileSmallDropInEnd) {
+          leftAnimRef.current.play(animFrames.pileSmallToLargeStart, animFrames.pileSmallToLargeEnd);
+        }
+        else {
+          leftAnimRef.current.play(animFrames.pileLargeDropInStart, animFrames.pileLargeDropInEnd);
+        }
+        lAnimFrame = animFrames.pileLargeDropInEnd;
 
 
-    if (leftQuantity === '' || rightQuantity == '') {
-      return imageList.empty;
-    }
-    else if (isNaN(leftQuantity) || isNaN(rightQuantity)) {
-      return imageList.empty;
-    }
-   
-    if (side === 'left') {
-      if (lQuantity > rQuantity) {
-        return imageList.pileLarge;
+        if (rightAnimFrame === animFrames.pileSmallDropInEnd) {
+          // do nothing
+        }
+        else if (rightAnimFrame === animFrames.pileLargeDropInEnd) {
+          rightAnimRef.current.play(animFrames.pileLargeToSmallStart, animFrames.pileLargeToSmallEnd);
+        }
+        else {
+          rightAnimRef.current.play(animFrames.pileSmallDropInStart, animFrames.pileSmallDropInEnd);
+        }
+        rAnimFrame = animFrames.pileSmallDropInEnd;
+
       } 
+      else if (lQuant < rQuant) {
+
+        if (leftAnimFrame === animFrames.pileSmallDropInEnd) {
+          // do nothing
+        }
+        else if (leftAnimFrame === animFrames.pileLargeDropInEnd) {
+          leftAnimRef.current.play(animFrames.pileLargeToSmallStart, animFrames.pileLargeToSmallEnd);
+        }
+        else {
+          leftAnimRef.current.play(animFrames.pileSmallDropInStart, animFrames.pileSmallDropInEnd);
+        }
+        lAnimFrame = animFrames.pileSmallDropInEnd;
+
+        if (rightAnimFrame === animFrames.pileLargeDropInEnd) {
+          // do nothing
+        }
+        else if (rightAnimFrame === animFrames.pileSmallDropInEnd) {
+          rightAnimRef.current.play(animFrames.pileSmallToLargeStart, animFrames.pileSmallToLargeEnd);
+        }
+        else {
+          rightAnimRef.current.play(animFrames.pileLargeDropInStart, animFrames.pileLargeDropInEnd);
+        }
+        rAnimFrame = animFrames.pileLargeDropInEnd;
+
+      }
       else {
-        return imageList.pileSmall;
+
+        if (leftAnimFrame === animFrames.pileSmallDropInEnd) {
+          // do nothing
+        }
+        else if (leftAnimFrame === animFrames.pileLargeDropInEnd) {
+          leftAnimRef.current.play(animFrames.pileLargeToSmallStart, animFrames.pileLargeToSmallEnd);
+        }
+        else {
+          leftAnimRef.current.play(animFrames.pileSmallDropInStart, animFrames.pileSmallDropInEnd);
+        }
+        lAnimFrame = animFrames.pileSmallDropInEnd;
+
+        if (rightAnimFrame === animFrames.pileSmallDropInEnd) {
+          // do nothing
+        }
+        else if (rightAnimFrame === animFrames.pileLargeDropInEnd) {
+          rightAnimRef.current.play(animFrames.pileLargeToSmallStart, animFrames.pileLargeToSmallEnd);
+        }
+        else {
+          rightAnimRef.current.play(animFrames.pileSmallDropInStart, animFrames.pileSmallDropInEnd);
+        }
+        rAnimFrame = animFrames.pileSmallDropInEnd;
+        
       }
     }
-    else if (side === 'right') {
-      if (rQuantity > lQuantity) {
-        return imageList.pileLarge;
-      } 
-      else {
-        return imageList.pileSmall;
-      }
-    }
+
+    setLeftAnimFrame(lAnimFrame);
+    setRightAnimFrame(rAnimFrame);
+
   }
 
   function chooseBoxStyle(isBestDeal) {
@@ -177,14 +281,16 @@ export default function App() {
     setRightPrice(newVal);
   }
 
-  function updatetLeftQuantity(newVal) {
+  function updateLeftQuantity(newVal) {
     resetOutput();
     setLeftQuantity(newVal);
+    chooseQuantityAnim(newVal, rightQuantity);
   }
 
   function updateRightQuantity(newVal) {
     resetOutput();
     setRightQuantity(newVal);
+    chooseQuantityAnim(leftQuantity, newVal);
   }
 
   function resetOutput() {
@@ -195,7 +301,6 @@ export default function App() {
     
     pricePerUnitFadeOut();
     bestDealBoxFadeOut();
-
   }
 
   function checkBadInput()
@@ -232,9 +337,10 @@ export default function App() {
     const lPricePerUnit = Number( leftPrice / leftQuantity );
     const rPricePerUnit = Number( rightPrice / rightQuantity);
 
-    // if ((lPricePerUnit === leftPricePerUnit) && (rPricePerUnit === rightPricePerUnit)) {
-    //   return;
-    // }
+    if (!fadedOut) {
+      doSparkle(lPricePerUnit, rPricePerUnit);
+      return;
+    }
 
     setLeftPricePerUnit(lPricePerUnit); 
     setRightPricePerUnit(rPricePerUnit); 
@@ -275,6 +381,7 @@ export default function App() {
         <View style={allStyles.calcBoxContainer}>
 
           {/* left box */}
+
           <Animated.View style={chooseBoxStyle(leftIsBestDeal)}>
 
             <View style={allStyles.calcInputContainer}>
@@ -284,11 +391,11 @@ export default function App() {
 
             <View style={allStyles.calcInputContainer}>
               <Text style={allStyles.quantityTitle}>{text.quantity}</Text>
-              <InputRow type={'quantity'} defaultValue={''} updateValue={updatetLeftQuantity}/>
+              <InputRow type={'quantity'} defaultValue={''} updateValue={updateLeftQuantity}/>
             </View>
 
             <View style={allStyles.calcImageContainer}>
-              <Image style={allStyles.calcQuantityImage} source={chooseQuantityImage('left')}></Image>
+              <LottieView ref={leftAnimRef} style={allStyles.calcImageAnim} source={animList.pileAnims} loop={false} autoPlay={false}/>
             </View>
             
             <View style={allStyles.calcOutputContainer}>
@@ -299,6 +406,8 @@ export default function App() {
                   </View>
               </View>
             </View>
+
+            <LottieView ref={leftSparkleRef} style={allStyles.sparkle} source={animList.sparkleAnim} loop={false} autoPlay={false}/>
 
           </Animated.View>
 
@@ -316,7 +425,7 @@ export default function App() {
             </View>
 
             <View style={allStyles.calcImageContainer}>
-              <Image style={allStyles.calcQuantityImage} source={chooseQuantityImage('right')}></Image>
+              <LottieView ref={rightAnimRef} style={allStyles.calcImageAnim} source={animList.pileAnims} loop={false} autoPlay={false}/>
             </View>
 
             <View style={allStyles.calcOutputContainer}>
@@ -328,6 +437,8 @@ export default function App() {
               </View>
             </View>
 
+            <LottieView ref={rightSparkleRef} style={allStyles.sparkle} source={animList.sparkleAnim} loop={false} autoPlay={false}/>
+
           </Animated.View>
 
         </View>
@@ -336,8 +447,6 @@ export default function App() {
           <CompareButton pressFunction={outputCompare} buttonIsLocked={checkBadInput()}/>
         </View>
 
-        {/* <LottieView style= {allStyles.test} source={imageList.animTest} autoPlay loop>
-        </LottieView> */}
 
       </Pressable>
     </ImageBackground>

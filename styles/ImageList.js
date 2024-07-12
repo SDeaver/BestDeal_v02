@@ -4,5 +4,4 @@ export const imageList = {
    iconClear: require('../assets/images/iconClear.png'),
    empty: require('../assets/images/empty.png'),
    background: require('../assets/images/background.jpg'),
-   animTest: require('../assets/anims/test.json')
 }

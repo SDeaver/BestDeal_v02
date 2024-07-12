@@ -7,6 +7,7 @@ export const animTiming = {
 
 export const animList = {
    pileAnims: require('../assets/anims/pileAnims.json'),
+   sparkleAnim: require('../assets/anims/sparkle.json'),
 }
 
 export const animFrames = {

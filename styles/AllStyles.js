@@ -180,7 +180,13 @@ export const allStyles = StyleSheet.create ({
         fontFamily: 'fontMain',
         textAlign: 'center',
     },
-
+    sparkle: {
+        position: 'absolute',
+        height: 100,
+        width: 100,
+        top: -42,
+        left: -42,
+    },
 });
 
 

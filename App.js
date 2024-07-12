@@ -40,6 +40,8 @@ export default function App() {
   const [rightAnimFrame, setRightAnimFrame] = useState(0);
   const leftAnimRef = useRef(null);
   const rightAnimRef = useRef(null);
+  const leftSparkleRef = useRef(null);
+  const rightSparkleRef = useRef(null);
 
   function pricePerUnitFadeIn(leftVal, rightVal) {
 
@@ -48,7 +50,7 @@ export default function App() {
       duration: animTiming.fadeInTime,
       useNativeDriver: true,
     }).start(() => {
-      bestDealBoxFadeIn();
+      bestDealBoxFadeIn(leftVal, rightVal);
       fadeAnim.removeAllListeners();
     });
 
@@ -77,13 +79,14 @@ export default function App() {
 
   }
 
-  function bestDealBoxFadeIn() {
+  function bestDealBoxFadeIn(leftVal, rightVal) {
 
     Animated.timing(fadeBoxAnim, {
       toValue: 1,
       duration: animTiming.fadeInBoxTime,
       useNativeDriver: true,
     }).start(() => {
+      doSparkle(leftVal, rightVal);
       fadeBoxAnim.removeAllListeners();
     });
 
@@ -127,6 +130,20 @@ export default function App() {
 
     })
   
+  }
+
+  function doSparkle(leftVal, rightVal)
+  {
+    if (leftVal < rightVal) {
+      leftSparkleRef.current.play();
+    }
+    else if (rightVal < leftVal) {
+      rightSparkleRef.current.play();
+    }
+    else {
+      leftSparkleRef.current.play();
+      rightSparkleRef.current.play();
+    }
   }
 
   function chooseQuantityAnim(lQuantity, rQuantity) {
@@ -264,7 +281,7 @@ export default function App() {
     setRightPrice(newVal);
   }
 
-  function updatetLeftQuantity(newVal) {
+  function updateLeftQuantity(newVal) {
     resetOutput();
     setLeftQuantity(newVal);
     chooseQuantityAnim(newVal, rightQuantity);
@@ -320,9 +337,10 @@ export default function App() {
     const lPricePerUnit = Number( leftPrice / leftQuantity );
     const rPricePerUnit = Number( rightPrice / rightQuantity);
 
-    // if ((lPricePerUnit === leftPricePerUnit) && (rPricePerUnit === rightPricePerUnit)) {
-    //   return;
-    // }
+    if (!fadedOut) {
+      doSparkle(lPricePerUnit, rPricePerUnit);
+      return;
+    }
 
     setLeftPricePerUnit(lPricePerUnit); 
     setRightPricePerUnit(rPricePerUnit); 
@@ -363,6 +381,7 @@ export default function App() {
         <View style={allStyles.calcBoxContainer}>
 
           {/* left box */}
+
           <Animated.View style={chooseBoxStyle(leftIsBestDeal)}>
 
             <View style={allStyles.calcInputContainer}>
@@ -372,7 +391,7 @@ export default function App() {
 
             <View style={allStyles.calcInputContainer}>
               <Text style={allStyles.quantityTitle}>{text.quantity}</Text>
-              <InputRow type={'quantity'} defaultValue={''} updateValue={updatetLeftQuantity}/>
+              <InputRow type={'quantity'} defaultValue={''} updateValue={updateLeftQuantity}/>
             </View>
 
             <View style={allStyles.calcImageContainer}>
@@ -387,6 +406,8 @@ export default function App() {
                   </View>
               </View>
             </View>
+
+            <LottieView ref={leftSparkleRef} style={allStyles.sparkle} source={animList.sparkleAnim} loop={false} autoPlay={false}/>
 
           </Animated.View>
 
@@ -415,6 +436,8 @@ export default function App() {
                   </View>
               </View>
             </View>
+
+            <LottieView ref={rightSparkleRef} style={allStyles.sparkle} source={animList.sparkleAnim} loop={false} autoPlay={false}/>
 
           </Animated.View>
 
